@@ -1,0 +1,9 @@
+# Sa loob ng .gitignore file:
+
+# Ignore database credentials and migrations
+connections.php
+migration.sql
+
+# Ignore log files
+*.log
+error_log
