@@ -1,0 +1,3 @@
+# Sa loob ng .gitignore file:
+# Ignore migration files containing sensitive data
+migration.sql
