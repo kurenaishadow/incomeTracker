@@ -1,9 +1,9 @@
 <?php
 // Database configuration
 define('DB_SERVER', 'localhost');
-define('DB_USERNAME', 'kurenaigui_user'); // Your database username
-define('DB_PASSWORD', 'GJ!2HkA^6n#Azx}+');     // Your database password
-define('DB_NAME', 'kurenaigui_dashboard_db'); // Your database name
+define('DB_USERNAME', 'root'); // Your database username
+define('DB_PASSWORD', '');     // Your database password
+define('DB_NAME', 'dashboard_db'); // Your database name
 
 
 // Attempt to connect to MySQL database
