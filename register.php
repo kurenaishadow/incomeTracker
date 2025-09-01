@@ -62,7 +62,7 @@ if ($conn->connect_error) {
             // We check if $swal_message is still empty to ensure no previous errors occurred
             if (empty($swal_message)) {
                 // Set the default password and hash it
-                $default_password = 'abc123!';
+                $default_password = 'password';
                 $password_hash = password_hash($default_password, PASSWORD_DEFAULT);
 
                 // Create variables for binding
@@ -90,7 +90,7 @@ if ($conn->connect_error) {
 
                         if ($stmt->execute()) {
                             // Set SweetAlert2 message directly for display on this page
-                            $swal_message = 'Registration successful! Your username: <strong>' . htmlspecialchars($bind_username) . '</strong>. Your default password is <strong>' . htmlspecialchars($default_password) . '</strong>. Please <a href="login.php" class="text-blue-600 hover:text-blue-800 font-medium">log in</a> and change your password immediately.';
+                            $swal_message = 'Registration successful!<br>Your username: <strong>' . htmlspecialchars($bind_username) . '</strong>. <br>Your default password is <strong>' . htmlspecialchars($default_password) . '</strong>. <br>Please <a href="login.php" class="text-blue-600 hover:text-blue-800 font-medium">log in</a> and change your password immediately.';
                             $swal_type = 'success';
                             // Clear form fields after successful submission
                             $username = '';
@@ -210,7 +210,7 @@ if ($conn && !$conn->connect_error) {
                     icon: phpSwalType,
                     title: phpSwalType.charAt(0).toUpperCase() + phpSwalType.slice(1), // Capitalize first letter
                     html: phpSwalMessage, // Use html to allow for bold text and links in the message
-                    confirmButtonText: 'Okay',
+                    confirmButtonText: 'Log in to your account',
                     customClass: {
                         confirmButton: 'bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-lg',
                     },
