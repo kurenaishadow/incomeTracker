@@ -62,7 +62,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     // Determine the 'current_password' for verification
     // If the needs_password_change flag is set, we assume their current password is the default
-    $current_password_for_verification = ($needs_password_change_flag == 1) ? 'abc123!' : ($_POST['current_password'] ?? '');
+    $current_password_for_verification = ($needs_password_change_flag == 1) ? 'password' : ($_POST['current_password'] ?? '');
 
     // First, verify the current password against the stored hash
     $sql_fetch_password = "SELECT password_hash FROM users WHERE id = ?";
@@ -76,8 +76,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if (!password_verify($current_password_for_verification, $stored_password_hash)) {
             $message = '<p class="text-red-500 text-sm mt-2">The current password you entered is incorrect.</p>';
             // Special message if they were supposed to use default but entered something else
-            if ($needs_password_change_flag == 1 && $current_password_for_verification !== 'abc123!') {
-                 $message .= '<p class="text-red-500 text-sm mt-2">Since you just registered, your current password should be \'abc123!\'.</p>';
+            if ($needs_password_change_flag == 1 && $current_password_for_verification !== 'password') {
+                 $message .= '<p class="text-red-500 text-sm mt-2">Since you just registered, your current password should be \'password\'.</p>';
             }
         } elseif (empty($new_password) || strlen($new_password) < 6) {
             $message = '<p class="text-red-500 text-sm mt-2">New password must be at least 6 characters long.</p>';
@@ -129,7 +129,7 @@ $conn->close();
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Change Password - Executive Dashboard</title>
+    <title>Change Password - Business Dashboard</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
@@ -179,16 +179,16 @@ $conn->close();
 </head>
 <body>
     <div class="container">
-        <h2 class="text-3xl font-bold text-center text-gray-800 mb-6">Change Your Password</h2>
+        <h2 class="text-3xl font-bold text-center text-gray-800 mb-6">Free Account Activated!</h2>
         <p class="text-red-600 text-center mb-6 font-semibold">
-            For security, please change your password before proceeding.
+            Change your password to ACTIVATE YOUR ACCOUNT.
         </p>
         <?php echo $message; ?>
         <form action="change_password.php" method="POST" class="space-y-6">
             <div>
-                <label for="current_password" class="block text-sm font-medium text-gray-700 mb-1">Current Password (or 'abc123!'):</label>
+                <label for="current_password" class="block text-sm font-medium text-gray-700 mb-1">Current Password: ('password'):</label>
                 <input type="password" id="current_password" name="current_password" required
-                       value="<?php echo ($needs_password_change_flag == 1) ? 'abc123!' : ''; ?>"
+                       value="<?php echo ($needs_password_change_flag == 1) ? 'password' : ''; ?>"
                        <?php echo ($needs_password_change_flag == 1) ? 'disabled readonly' : ''; ?>
                        class="form-input w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-red-500 focus:border-transparent outline-none transition duration-200">
             </div>
@@ -204,7 +204,7 @@ $conn->close();
             </div>
             <button type="submit"
                     class="w-full bg-red-600 text-white py-3 rounded-md hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-opacity-50 font-semibold transition duration-200 shadow-md">
-                Change Password
+                Activate Account
             </button>
         </form>
         <p class="mt-6 text-center text-gray-600 text-sm">
