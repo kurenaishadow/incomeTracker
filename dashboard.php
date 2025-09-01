@@ -970,7 +970,7 @@ $conn->close();
                             
                             <h3 class="text-xl font-semibold text-red-700 mb-2">This Month Expenses</h3>
                             <p class="text-3xl font-bold text-red-600 mb-1">
-                                <?php echo htmlspecialchars($currency); ?><?php echo number_format($current_month_actual_income, 2); ?>
+                                <?php echo htmlspecialchars($currency); ?><?php echo number_format($current_month_actual_expenses, 2); ?>
                             </p> 
                             <p class="text-gray-500 text-sm"><?php echo date('F Y'); ?> </p>
                         </div>   
