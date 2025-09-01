@@ -972,7 +972,7 @@ $conn->close();
                         <!-- Last month data card -->
                         <h3 class="text-xl font-semibold text-blue-700 mb-2">Last Month Sales</h3>
                             <p class="text-3xl font-bold text-blue-600 mb-1"><?php echo htmlspecialchars($currency); ?><?php echo number_format($last_month_actual_income, 2); ?></p> 
-                            <p class="text-gray-500 text-sm">(<?php echo date('F Y', strtotime('last month')); ?>) </p>
+                            <p class="text-gray-500 text-sm"><?php echo date('F Y', strtotime('last month')); ?> </p>
                         <!-- Total Sales     --><br>
                         <h3 class="text-xl font-semibold text-blue-700 mb-2"> Total Sales</h3>
                             <p class="text-3xl font-bold text-blue-600 mb-1"><?php echo htmlspecialchars($currency); ?><?php echo number_format($total_sales_30_days, 2); ?></p> 
@@ -982,7 +982,7 @@ $conn->close();
                          <!-- Last month data card-->
                         <h3 class="text-xl font-semibold text-red-700 mb-2">Last Month Expenses</h3>
                             <p class="text-3xl font-bold text-red-600 mb-1"><?php echo htmlspecialchars($currency); ?><?php echo number_format($last_month_actual_expenses, 2); ?></p> 
-                            <p class="text-gray-500 text-sm">(<?php echo date('F Y', strtotime('last month')); ?>) </p>
+                            <p class="text-gray-500 text-sm"><?php echo date('F Y', strtotime('last month')); ?> </p>
                         <!-- Total profit--><br>
                         <h3 class="text-xl font-semibold text-red-700 mb-2"> Total Expenses</h3>
                             <p class="text-3xl font-bold text-red-600 mb-1"><?php echo htmlspecialchars($currency); ?><?php echo number_format($total_expenses_30_days, 2); ?></p> 
@@ -993,7 +993,7 @@ $conn->close();
                     <!-- Last month data card -->
                         <h3 class="text-xl font-semibold text-green-700 mb-2">Last Month Profit</h3>
                             <p class="text-3xl font-bold text-green-600 mb-1"><?php echo htmlspecialchars($currency); ?><?php echo number_format($last_month_actual_income - $last_month_actual_expenses, 2); ?></p> 
-                            <p class="text-gray-500 text-sm">Last Month <?php echo date('F Y', strtotime('last month')); ?> </p>
+                            <p class="text-gray-500 text-sm"><?php echo date('F Y', strtotime('last month')); ?></p>
                         <!-- Total profit --><br>
                         <h3 class="text-xl font-semibold text-green-700 mb-2"> Total Profit</h3>
                             <p class="text-3xl font-bold text-green-600 mb-1"><?php echo htmlspecialchars($currency); ?><?php echo number_format($total_profit_30_days, 2); ?></p> 
