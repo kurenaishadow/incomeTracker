@@ -203,7 +203,8 @@ $scheduled_expenses_alert = null;
 
 if (!empty($business_name)) {
     // Fetch total income for the last 30 days
-    $sql_income_30_days = "SELECT SUM(amount) AS total_income FROM income WHERE user_id = ? AND income_date >= CURDATE() - INTERVAL 30 DAY";
+    $sql_income_30_days = "SELECT SUM(amount) AS total_income FROM income WHERE user_id = ? "; 
+    // AND income_date >= CURDATE() - INTERVAL 30 DAY -delete in line above-
     if ($stmt_income = $conn->prepare($sql_income_30_days)) {
         $stmt_income->bind_param('i', $user_id);
         if ($stmt_income->execute()) {
@@ -215,7 +216,8 @@ if (!empty($business_name)) {
     }
 
     // Fetch total expenses for the last 30 days
-    $sql_expenses_30_days = "SELECT SUM(amount) AS total_expenses FROM expenses WHERE user_id = ? AND expense_date >= CURDATE() - INTERVAL 30 DAY";
+    $sql_expenses_30_days = "SELECT SUM(amount) AS total_expenses FROM expenses WHERE user_id = ? ";
+    // AND expense_date >= CURDATE() - INTERVAL 30 DAY -deleted in line above-
     if ($stmt_expenses = $conn->prepare($sql_expenses_30_days)) {
         $stmt_expenses->bind_param('i', $user_id);
         if ($stmt_expenses->execute()) {
@@ -609,7 +611,30 @@ if ($stmt = $conn->prepare($sql_upcoming_bills)) {
     $stmt->close();
 }
 
+// Fetch last month's actual income
+                    $sql_last_month_income = "SELECT SUM(amount) AS last_month_income FROM income WHERE user_id = ? AND MONTH(income_date) = MONTH(DATE_SUB(CURDATE(), INTERVAL 1 MONTH)) AND YEAR(income_date) = YEAR(DATE_SUB(CURDATE(), INTERVAL 1 MONTH))";
+                    if ($stmt_last_income = $conn->prepare($sql_last_month_income)) {
+                        $stmt_last_income->bind_param('i', $user_id);
+                        if ($stmt_last_income->execute()) {
+                            $stmt_last_income->bind_result($last_month_income_raw);
+                            $stmt_last_income->fetch();
+                            $last_month_actual_income = $last_month_income_raw ?: 0;
+                        }
+                        $stmt_last_income->close();
+                    }
 
+                    // Fetch last month's actual expenses
+                    $sql_last_month_expenses = "SELECT SUM(amount) AS last_month_expenses FROM expenses WHERE user_id = ? AND MONTH(expense_date) = MONTH(DATE_SUB(CURDATE(), INTERVAL 1 MONTH)) AND YEAR(expense_date) = YEAR(DATE_SUB(CURDATE(), INTERVAL 1 MONTH))";
+                    if ($stmt_last_expenses = $conn->prepare($sql_last_month_expenses)) {
+                        $stmt_last_expenses->bind_param('i', $user_id);
+                        if ($stmt_last_expenses->execute()) {
+                            $stmt_last_expenses->bind_result($last_month_expenses_raw);
+                            $stmt_last_expenses->fetch();
+                            $last_month_actual_expenses = $last_month_expenses_raw ?: 0;
+                        }
+                        $stmt_last_expenses->close();
+                    }
+                    $last_month_profit = $last_month_actual_income - $last_month_actual_expenses;
 
 // Close connection
 $conn->close();
@@ -918,23 +943,62 @@ $conn->close();
                         </div>
                     </div>
                 </div>
+                    
+                <!-- Last Months -->
+                    <div class="mt-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"> 
+                        <div class="card bg-gradient-to-br from-blue-50 to-blue-100 p-6 rounded-xl shadow-lg border border-blue-200 transform hover:shadow-xl transition-all duration-300 ease-in-out"> 
+                            <h3 class="text-xl font-semibold text-blue-700 mb-2">This Month Sales</h3>
+                            <p class="text-3xl font-bold text-blue-600 mb-1"><?php echo htmlspecialchars($currency); ?><?php echo number_format($current_month_actual_income, 2); ?></p> 
+                            <!-- <p class="text-gray-500 text-sm">Last 30 days</p> -->
+                            <p class="text-gray-500 text-sm"><?php echo date('F Y'); ?> </p>
+                        </div>
+                        <div class="card bg-gradient-to-br from-red-50 to-red-100 p-6 rounded-xl shadow-lg border border-red-200 transform hover:shadow-xl transition-all duration-300 ease-in-out"> 
+                            <h3 class="text-xl font-semibold text-red-700 mb-2">This Month Expenses</h3>
+                            <p class="text-3xl font-bold text-red-600 mb-1"><?php echo htmlspecialchars($currency); ?><?php echo number_format($current_month_actual_expenses, 2); ?></p> 
+                            <!-- <p class="text-gray-500 text-sm">Last 30 days</p> -->
+                            <p class="text-gray-500 text-sm"><?php echo date('F Y'); ?> </p>
+                        </div>   
+                        <div class="card bg-gradient-to-br from-green-50 to-green-100 p-6 rounded-xl shadow-lg border border-green-200 transform hover:shadow-xl transition-all duration-300 ease-in-out"> 
+                            <h3 class="text-xl font-semibold text-green-700 mb-2">This Month Profit</h3>
+                            <p class="text-3xl font-bold text-green-600 mb-1"><?php echo htmlspecialchars($currency); ?><?php echo number_format($current_month_actual_income - $current_month_actual_expenses, 2); ?></p> 
+                            <!-- <p class="text-gray-500 text-sm">Last 30 days</p> -->
+                            <p class="text-gray-500 text-sm"><?php echo date('F Y'); ?> </p>
+                        </div>                     
+                    </div>
 
-
-                <div class="mt-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"> <div class="card bg-gradient-to-br from-blue-50 to-blue-100 p-6 rounded-xl shadow-lg border border-blue-200 transform hover:shadow-xl transition-all duration-300 ease-in-out"> <h3 class="text-xl font-semibold text-blue-700 mb-2"> Total Sales
-                        </h3>
-                        <p class="text-3xl font-bold text-blue-600 mb-1"><?php echo htmlspecialchars($currency); ?><?php echo number_format($total_sales_30_days, 2); ?></p> <p class="text-gray-500 text-sm">Last 30 days</p>
+                <!-- This month -->
+                <div class="mt-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"> 
+                    <div class="card bg-gradient-to-br from-blue-50 to-blue-100 p-6 rounded-xl shadow-lg border border-blue-200 transform hover:shadow-xl transition-all duration-300 ease-in-out">                        
+                        <!-- Last month data card -->
+                        <h3 class="text-xl font-semibold text-blue-700 mb-2">Last Month Sales</h3>
+                            <p class="text-3xl font-bold text-blue-600 mb-1"><?php echo htmlspecialchars($currency); ?><?php echo number_format($last_month_actual_income, 2); ?></p> 
+                            <p class="text-gray-500 text-sm">(<?php echo date('F Y', strtotime('last month')); ?>) </p>
+                        <!-- Total Sales     --><br>
+                        <h3 class="text-xl font-semibold text-blue-700 mb-2"> Total Sales</h3>
+                            <p class="text-3xl font-bold text-blue-600 mb-1"><?php echo htmlspecialchars($currency); ?><?php echo number_format($total_sales_30_days, 2); ?></p> 
                     </div>
                     
-                    <div class="card bg-gradient-to-br from-red-50 to-red-100 p-6 rounded-xl shadow-lg border border-red-200 transform hover:shadow-xl transition-all duration-300 ease-in-out"> <h3 class="text-xl font-semibold text-red-700 mb-2"> Total Expenses
-                        </h3>
-                        <p class="text-3xl font-bold text-red-600 mb-1"><?php echo htmlspecialchars($currency); ?><?php echo number_format($total_expenses_30_days, 2); ?></p> <p class="text-gray-500 text-sm">Last 30 days</p>
+                    <div class="card bg-gradient-to-br from-red-50 to-red-100 p-6 rounded-xl shadow-lg border border-red-200 transform hover:shadow-xl transition-all duration-300 ease-in-out">                       
+                         <!-- Last month data card-->
+                        <h3 class="text-xl font-semibold text-red-700 mb-2">Last Month Expenses</h3>
+                            <p class="text-3xl font-bold text-red-600 mb-1"><?php echo htmlspecialchars($currency); ?><?php echo number_format($last_month_actual_expenses, 2); ?></p> 
+                            <p class="text-gray-500 text-sm">(<?php echo date('F Y', strtotime('last month')); ?>) </p>
+                        <!-- Total profit--><br>
+                        <h3 class="text-xl font-semibold text-red-700 mb-2"> Total Expenses</h3>
+                            <p class="text-3xl font-bold text-red-600 mb-1"><?php echo htmlspecialchars($currency); ?><?php echo number_format($total_expenses_30_days, 2); ?></p> 
+
                     </div>
 
-                    <div class="card bg-gradient-to-br from-green-50 to-green-100 p-6 rounded-xl shadow-lg border border-green-200 transform hover:shadow-xl transition-all duration-300 ease-in-out"> <h3 class="text-xl font-semibold text-green-700 mb-2"> Total Profit
-                        </h3>
-                        <p class="text-3xl font-bold text-green-600 mb-1"><?php echo htmlspecialchars($currency); ?><?php echo number_format($total_profit_30_days, 2); ?></p> <p class="text-gray-500 text-sm">Last 30 days</p>
+                    <div class="card bg-gradient-to-br from-green-50 to-green-100 p-6 rounded-xl shadow-lg border border-green-200 transform hover:shadow-xl transition-all duration-300 ease-in-out">                         
+                    <!-- Last month data card -->
+                        <h3 class="text-xl font-semibold text-green-700 mb-2">Last Month Profit</h3>
+                            <p class="text-3xl font-bold text-green-600 mb-1"><?php echo htmlspecialchars($currency); ?><?php echo number_format($last_month_actual_income - $last_month_actual_expenses, 2); ?></p> 
+                            <p class="text-gray-500 text-sm">Last Month <?php echo date('F Y', strtotime('last month')); ?> </p>
+                        <!-- Total profit --><br>
+                        <h3 class="text-xl font-semibold text-green-700 mb-2"> Total Profit</h3>
+                            <p class="text-3xl font-bold text-green-600 mb-1"><?php echo htmlspecialchars($currency); ?><?php echo number_format($total_profit_30_days, 2); ?></p> 
                     </div>
-                </div>
+                </div>                
                 <div class="bg-white p-4 rounded-xl shadow-lg border border-gray-200 mt-4"> <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-5"> <h3 id="chartTitle" class="text-2xl font-bold text-gray-800 text-center sm:text-left mb-3 sm:mb-0">Financial Overview (Current Year <?php echo date('Y'); ?>)</h3> <select id="chartPeriod" onchange="updateChartPeriod()"
                                 class="form-input px-3 py-1 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition duration-200 shadow-sm appearance-none bg-white w-full sm:w-auto"> <option value="daily">Daily View</option>
                             <option value="monthly">Monthly View</option>
