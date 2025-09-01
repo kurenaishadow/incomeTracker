@@ -804,14 +804,14 @@ $conn->close();
 <body class="bg-gray-100">
     <nav class="bg-gradient-to-r from-blue-600 to-blue-500 p-4 shadow-lg">
         <div class="container flex justify-between items-center nav-header">
-            <!--<h1 class="text-white text-3xl font-bold tracking-wide">Dashboard</h1>-->
+            <!-- Left Side: Welcome and Navigation Links -->
             <div class="flex items-center space-x-6 nav-user-controls">
                 <span class="text-white text-lg font-medium">Welcome, <?php echo htmlspecialchars($username); ?>!</span>
                 <a href="scheduled_expenses.php" class="nav-link bg-white text-blue-700 px-5 py-2 rounded-full font-semibold shadow-md hover:bg-blue-50 transition duration-300 ease-in-out transform">
                     Scheduled Expenses
                 </a>
                 <a href="transactions.php" class="nav-link bg-white text-blue-700 px-5 py-2 rounded-full font-semibold shadow-md hover:bg-blue-50 transition duration-300 ease-in-out transform">
-                     Transactions
+                    Transactions
                 </a>
                 <a href="inventory_manage.php" class="nav-link bg-white text-blue-700 px-5 py-2 rounded-full font-semibold shadow-md hover:bg-blue-50 transition duration-300 ease-in-out transform">
                     Inventory
@@ -819,12 +819,15 @@ $conn->close();
                 <a href="user_settings.php" class="nav-link bg-white text-blue-700 px-5 py-2 rounded-full font-semibold shadow-md hover:bg-blue-50 transition duration-300 ease-in-out transform">
                     Settings
                 </a>
+            </div>
+            <!-- Right Side: Logout Button -->
+            <div>
                 <a href="logout.php" class="nav-link bg-white text-blue-700 px-5 py-2 rounded-full font-semibold shadow-md hover:bg-blue-50 transition duration-300 ease-in-out transform">
                     Logout
                 </a>
             </div>
         </div>
-    </nav>
+    </nav>    
 
     <main class="container py-1"> <?php if (empty($business_name)): ?>
             <div class="bg-white p-8 rounded-xl shadow-2xl w-full max-w-md mx-auto transform hover:scale-105 transition duration-300 ease-in-out"> <h2 class="text-3xl font-bold text-center text-gray-800 mb-5">Enter Your Business Information</h2> <p class="text-gray-600 text-center mb-6">Let's get your dashboard personalized! Please provide your business name and preferred currency below.</p> <form action="dashboard.php" method="POST" class="space-y-5"> <div>
@@ -846,8 +849,8 @@ $conn->close();
                 </form>
             </div>
         <?php else: ?>
-            <div class="bg-white p-4 rounded-xl shadow-2xl mb-4"> <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-5"> <h2 class="text-4xl font-extrabold text-gray-800 animate-fade-in mb-3 sm:mb-0">Dashboard for <span class="text-blue-600"><?php echo htmlspecialchars($business_name); ?></span></h2> <div class="flex flex-wrap justify-center sm:justify-end gap-3 dashboard-actions"> <a href="income_input.php" class="w-full sm:w-auto bg-green-500 text-white px-4 py-2 rounded-full font-semibold shadow-md hover:bg-green-600 transition duration-300 ease-in-out transform hover:scale-105"> Add Income
-                        </a>
+            <div class="bg-white p-4 rounded-xl shadow-2xl mb-4"> <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-5"> <h2 class="text-4xl font-extrabold text-gray-800 animate-fade-in mb-3 sm:mb-0">Dashboard for <span class="text-blue-600"><?php echo htmlspecialchars($business_name); ?></span></h2> <div class="flex flex-wrap justify-center sm:justify-end gap-3 dashboard-actions"> 
+                <a href="income_input.php" class="w-full sm:w-auto bg-green-500 text-white px-4 py-2 rounded-full font-semibold shadow-md hover:bg-green-600 transition duration-300 ease-in-out transform hover:scale-105"> Add Income</a>
                         <a href="expense_input.php" class="w-full sm:w-auto bg-red-500 text-white px-4 py-2 rounded-full font-semibold shadow-md hover:bg-red-600 transition duration-300 ease-in-out transform hover:scale-105"> Add Expense
                         </a>
                         <button type="button" onclick="toggleEditForm()"
@@ -945,18 +948,30 @@ $conn->close();
                     </div>
                 </div>
                     
-                <!-- Last Months -->
+                <!-- This Month -->
                     <div class="mt-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"> 
-                        <div class="card bg-gradient-to-br from-blue-50 to-blue-100 p-6 rounded-xl shadow-lg border border-blue-200 transform hover:shadow-xl transition-all duration-300 ease-in-out"> 
+                        <div class="relative card bg-gradient-to-br from-blue-50 to-blue-100 p-6 rounded-xl shadow-lg border border-blue-200 transform hover:shadow-xl transition-all duration-300 ease-in-out"> 
+                            <!-- + Button -->
+                            <a href="income_input.php"
+                                class="absolute top-1/2 right-6 -translate-y-1/2 bg-blue-600 text-white text-4xl rounded-full w-14 h-14 flex items-center justify-center shadow-lg hover:bg-blue-700 transition-all duration-200 focus:outline-none"
+                                aria-label="Add">+</a>
+                            
                             <h3 class="text-xl font-semibold text-blue-700 mb-2">This Month Sales</h3>
-                            <p class="text-3xl font-bold text-blue-600 mb-1"><?php echo htmlspecialchars($currency); ?><?php echo number_format($current_month_actual_income, 2); ?></p> 
-                            <!-- <p class="text-gray-500 text-sm">Last 30 days</p> -->
+                            <p class="text-3xl font-bold text-blue-600 mb-1">
+                                <?php echo htmlspecialchars($currency); ?><?php echo number_format($current_month_actual_income, 2); ?>
+                            </p> 
                             <p class="text-gray-500 text-sm"><?php echo date('F Y'); ?> </p>
                         </div>
-                        <div class="card bg-gradient-to-br from-red-50 to-red-100 p-6 rounded-xl shadow-lg border border-red-200 transform hover:shadow-xl transition-all duration-300 ease-in-out"> 
+                        <div class="relative card bg-gradient-to-br from-red-50 to-red-100 p-6 rounded-xl shadow-lg border border-red-200 transform hover:shadow-xl transition-all duration-300 ease-in-out"> 
+                            <!-- + Button -->
+                            <a href="expense_input.php"
+                                class="absolute top-1/2 right-6 -translate-y-1/2 bg-red-600 text-white text-4xl rounded-full w-14 h-14 flex items-center justify-center shadow-lg hover:bg-red-700 transition-all duration-200 focus:outline-none"
+                                aria-label="Add">+</a>
+                            
                             <h3 class="text-xl font-semibold text-red-700 mb-2">This Month Expenses</h3>
-                            <p class="text-3xl font-bold text-red-600 mb-1"><?php echo htmlspecialchars($currency); ?><?php echo number_format($current_month_actual_expenses, 2); ?></p> 
-                            <!-- <p class="text-gray-500 text-sm">Last 30 days</p> -->
+                            <p class="text-3xl font-bold text-red-600 mb-1">
+                                <?php echo htmlspecialchars($currency); ?><?php echo number_format($current_month_actual_income, 2); ?>
+                            </p> 
                             <p class="text-gray-500 text-sm"><?php echo date('F Y'); ?> </p>
                         </div>   
                         <div class="card bg-gradient-to-br from-green-50 to-green-100 p-6 rounded-xl shadow-lg border border-green-200 transform hover:shadow-xl transition-all duration-300 ease-in-out"> 
