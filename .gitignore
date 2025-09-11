@@ -3,6 +3,7 @@
 # Ignore database credentials and migrations
 connections.php
 migration.sql
+updated_migration.sql
 
 # Ignore log files
 *.log
