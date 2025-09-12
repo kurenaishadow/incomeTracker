@@ -200,8 +200,8 @@ $logs_result = $conn->query("SELECT * FROM savings_logs WHERE user_id = $user_id
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Savings Goals - Your App</title>
+    <!-- <meta name="viewport" content="width=device-width, initial-scale=1.0"> -->
+    <title>Savings</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <style>
@@ -327,7 +327,7 @@ $logs_result = $conn->query("SELECT * FROM savings_logs WHERE user_id = $user_id
                 </div>
                 <div class="card p-6 text-center">
                     <h2 class="text-xl md:text-2xl font-semibold text-gray-800">Total Profit Balance</h2>
-                    <p class="text-4xl md:text-5xl font-bold text-gray-800 mt-2">
+                    <p class="text-4xl md:text-5xl font-bold text-red-800 mt-2">
                         <?php echo htmlspecialchars('₱ ' . number_format($total_account_balance, 2)); ?>
                     </p>
                     <p class="text-sm text-gray-500 mt-1">Main wallet + all savings goals.</p>
