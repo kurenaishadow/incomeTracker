@@ -239,7 +239,15 @@ $logs_result = $conn->query("SELECT * FROM savings_logs WHERE user_id = $user_id
             max-width: 1000px;
             margin-left: auto;
             margin-right: auto;
-            padding: 2rem;
+            padding: 0;
+        }
+
+        /* This rule applies ONLY when the screen is 768px wide or smaller */
+        @media (max-width: 768px) {
+            .container {
+                /* Set padding to zero on all sides */
+                padding: 0;
+            }
         }
         
         .card {
