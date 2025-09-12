@@ -849,10 +849,11 @@ $conn->close();
                 </form>
             </div>
         <?php else: ?>
-            <div class="bg-white p-4 rounded-xl shadow-2xl mb-4"> <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-5"> <h2 class="text-4xl font-extrabold text-gray-800 animate-fade-in mb-3 sm:mb-0">Dashboard for <span class="text-blue-600"><?php echo htmlspecialchars($business_name); ?></span></h2> <div class="flex flex-wrap justify-center sm:justify-end gap-3 dashboard-actions"> 
+            <div class="bg-white p-4 rounded-xl shadow-2xl mb-4"> 
+                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-5"> <h2 class="text-4xl font-extrabold text-gray-800 animate-fade-in mb-3 sm:mb-0">Dashboard for <span class="text-blue-600"><?php echo htmlspecialchars($business_name); ?></span></h2> <div class="flex flex-wrap justify-center sm:justify-end gap-3 dashboard-actions"> 
                 <a href="income_input.php" class="w-full sm:w-auto bg-green-500 text-white px-4 py-2 rounded-full font-semibold shadow-md hover:bg-green-600 transition duration-300 ease-in-out transform hover:scale-105"> Add Income</a>
-                        <a href="expense_input.php" class="w-full sm:w-auto bg-red-500 text-white px-4 py-2 rounded-full font-semibold shadow-md hover:bg-red-600 transition duration-300 ease-in-out transform hover:scale-105"> Add Expense
-                        </a>
+                <a href="expense_input.php" class="w-full sm:w-auto bg-red-500 text-white px-4 py-2 rounded-full font-semibold shadow-md hover:bg-red-600 transition duration-300 ease-in-out transform hover:scale-105"> Add Expense</a>
+                <a href="savings.php" class="w-full sm:w-auto bg-blue-500 text-white px-4 py-2 rounded-full font-semibold shadow-md hover:bg-blue-600 transition duration-300 ease-in-out transform hover:scale-105"> Savings</a>
                         <button type="button" onclick="toggleEditForm()"
                                 class="w-full sm:w-auto bg-blue-200 text-blue-700 px-3 py-2 rounded-full font-medium shadow-sm hover:bg-blue-300 transition duration-200"> Edit Business Info
                         </button>
