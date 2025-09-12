@@ -90,7 +90,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         // Add a log entry for the savings deposit
                         $log_stmt = $conn->prepare("INSERT INTO savings_logs (user_id, goal_id, log_type, amount, description) VALUES (?, ?, ?, ?, ?)");
                         $log_type = 'Deposit';
-                        $log_description = "Deposited PHP " . number_format($deposit_amount, 2) . " to '{$goal_name}'";
+                        $log_description = "Deposited PHP " . number_format($deposit_amount, 0) . " to '{$goal_name}'";
                         $log_stmt->bind_param("iisds", $user_id, $goal_id, $log_type, $deposit_amount, $log_description);
                         $log_stmt->execute();
                         $log_stmt->close();
@@ -408,7 +408,7 @@ $logs_result = $conn->query("SELECT * FROM savings_logs WHERE user_id = $user_id
                                                 ?>
                                             </td>
                                             <td class="py-4 px-6 text-right font-semibold">
-                                                ₱ <?php echo number_format($log['amount'], 2); ?>
+                                                ₱ <?php echo number_format($log['amount'], 0); ?>
                                             </td>
                                             <td class="py-4 px-6 max-w-xs truncate">
                                                 <?php echo htmlspecialchars($log['description']); ?>
