@@ -167,7 +167,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 // --- Dynamic Data for Dashboard (fetched only if business_name exists) ---
 $total_sales_30_days = 0;
 $total_expenses_30_days = 0;
-$total_profit_30_days = 0; 
+$total_profit_30_days = 0;
 
 $current_month_actual_income = 0;
 $current_month_actual_expenses = 0;
@@ -203,7 +203,7 @@ $scheduled_expenses_alert = null;
 
 if (!empty($business_name)) {
     // Fetch total income for the last 30 days
-    $sql_income_30_days = "SELECT SUM(amount) AS total_income FROM income WHERE user_id = ? "; 
+    $sql_income_30_days = "SELECT SUM(amount) AS total_income FROM income WHERE user_id = ? ";
     // AND income_date >= CURDATE() - INTERVAL 30 DAY -delete in line above-
     if ($stmt_income = $conn->prepare($sql_income_30_days)) {
         $stmt_income->bind_param('i', $user_id);
@@ -644,8 +644,7 @@ $conn->close();
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <!--<meta name="viewport" content="width=device-width, initial-scale=1.0">-->
-     <meta name="viewport" content="width=1100">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard - Business Dashboard</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -655,16 +654,11 @@ $conn->close();
         body {
             font-family: 'Inter', sans-serif;
             background-color: #f0f9ff;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            background-image: linear-gradient(to right bottom, #f0f9ff, #e0f7fa);
         }
-        /* Deleted container padding */
         .container {
             max-width: 1200px;
             margin: 0 auto;
-            flex-grow: 1;
+            padding: 0 1rem; /* Added padding for smaller screens */
         }
         .card {
             transition: all 0.3s ease-in-out;
@@ -673,11 +667,6 @@ $conn->close();
         .card:hover {
             transform: translateY(-5px);
             box-shadow: 0 10px 20px rgba(0,0,0,0.08);
-        }
-        .nav-link:hover {
-            transform: scale(1.05);
-            color: #ffffff;
-            background-color: rgba(255, 255, 255, 0.2);
         }
         .form-input {
             transition: all 0.2s ease-in-out;
@@ -707,7 +696,6 @@ $conn->close();
             font-size: 0.75rem;
             line-height: 1rem;
         }
-        /* Style for hidden edit form */
         .hidden-edit-form {
             max-height: 0;
             overflow: hidden;
@@ -716,30 +704,24 @@ $conn->close();
             transform: translateY(-10px);
         }
         .visible-edit-form {
-            max-height: 500px; /* Adjust as needed for content */
+            max-height: 500px; /* Adjust as needed */
             opacity: 1;
             transform: translateY(0);
         }
+
+        /* --- NEW SIDEBAR STYLES --- */
+        #sidebar {
+            transition: transform 0.3s ease-in-out;
+        }
+        #sidebar.sidebar-closed {
+            transform: translateX(-100%);
+        }
+        #sidebar.sidebar-open {
+            transform: translateX(0);
+        }
+
         /* Mobile adjustments */
         @media (max-width: 768px) {
-            .nav-header {
-                flex-direction: column;
-                align-items: flex-start;
-            }
-            .nav-user-controls {
-                margin-top: 1rem;
-                flex-direction: column;
-                align-items: flex-start;
-                width: 100%;
-                gap: 0.5rem;
-            }
-            .nav-user-controls span, .nav-user-controls a {
-                width: 100%;
-                text-align: center;
-            }
-            .nav-user-controls a {
-                padding: 0.75rem 0;
-            }
             .dashboard-actions {
                 flex-direction: column;
                 gap: 1rem;
@@ -749,137 +731,131 @@ $conn->close();
                 width: 100%;
                 text-align: center;
             }
-            .card {
-                padding: 1rem;
-            }
-            .card h3 {
-                font-size: 1.25rem;
-            }
-            .card p:first-of-type {
-                font-size: 2rem;
-            }
-            .chart-container {
-                height: 250px;
-            }
-            h1.text-3xl {
-                font-size: 1.75rem;
-            }
-            .nav-user-controls span.text-lg,
-            .nav-user-controls a.text-lg {
-                font-size: 0.9rem;
-            }
-            h2.text-4xl {
-                font-size: 2rem;
-            }
-            p.text-xl {
-                font-size: 1rem;
-            }
-            .bg-blue-50 p.text-lg {
-                font-size: 0.95rem;
-            }
-            h3.text-2xl {
-                font-size: 1.5rem;
-            }
-            p.text-lg.font-medium.text-gray-800.mb-2 {
-                font-size: 0.95rem;
-            }
-            .progress-bar {
-                font-size: 0.65rem;
-            }
-            .bg-white p.text-sm.mt-2 {
-                font-size: 0.75rem;
-            }
-            table .text-sm {
-                font-size: 0.75rem;
-            }
-            table .text-xs {
-                font-size: 0.65rem;
-            }
-            footer p.text-lg {
-                font-size: 0.8rem;
-            }
+            .card { padding: 1rem; }
+            .card h3 { font-size: 1.25rem; }
+            .card p:first-of-type { font-size: 2rem; }
+            .chart-container { height: 250px; }
+            h1.text-3xl { font-size: 1.75rem; }
+            h2.text-4xl { font-size: 2rem; }
+            p.text-xl { font-size: 1rem; }
+            .bg-blue-50 p.text-lg { font-size: 0.95rem; }
+            h3.text-2xl { font-size: 1.5rem; }
+            p.text-lg.font-medium.text-gray-800.mb-2 { font-size: 0.95rem; }
+            .progress-bar { font-size: 0.65rem; }
+            .bg-white p.text-sm.mt-2 { font-size: 0.75rem; }
+            table .text-sm { font-size: 0.75rem; }
+            table .text-xs { font-size: 0.65rem; }
+            footer p.text-lg { font-size: 0.8rem; }
         }
     </style>
 </head>
 <body class="bg-gray-100">
-    <nav class="bg-gradient-to-r from-blue-600 to-blue-500 p-4 shadow-lg">
-        <div class="container flex justify-between items-center nav-header">
-            <!-- Left Side: Welcome and Navigation Links -->
-            <div class="flex items-center space-x-6 nav-user-controls">
-                <span class="text-white text-lg font-medium">Welcome, <?php echo htmlspecialchars($username); ?>!</span>
-                <a href="scheduled_expenses.php" class="nav-link bg-white text-blue-700 px-5 py-2 rounded-full font-semibold shadow-md hover:bg-blue-50 transition duration-300 ease-in-out transform">
-                    Scheduled Expenses
-                </a>
-                <a href="transactions.php" class="nav-link bg-white text-blue-700 px-5 py-2 rounded-full font-semibold shadow-md hover:bg-blue-50 transition duration-300 ease-in-out transform">
-                    Transactions
-                </a>
-                <a href="inventory_manage.php" class="nav-link bg-white text-blue-700 px-5 py-2 rounded-full font-semibold shadow-md hover:bg-blue-50 transition duration-300 ease-in-out transform">
-                    Inventory
-                </a>
-                <a href="user_settings.php" class="nav-link bg-white text-blue-700 px-5 py-2 rounded-full font-semibold shadow-md hover:bg-blue-50 transition duration-300 ease-in-out transform">
-                    Settings
-                </a>
-            </div>
-            <!-- Right Side: Logout Button -->
-            <div>
-                <a href="logout.php" class="nav-link bg-white text-blue-700 px-5 py-2 rounded-full font-semibold shadow-md hover:bg-blue-50 transition duration-300 ease-in-out transform">
-                    Logout
-                </a>
-            </div>
-        </div>
-    </nav>    
 
-    <main class="container py-1"> <?php if (empty($business_name)): ?>
-            <div class="bg-white p-8 rounded-xl shadow-2xl w-full max-w-md mx-auto transform hover:scale-105 transition duration-300 ease-in-out"> <h2 class="text-3xl font-bold text-center text-gray-800 mb-5">Enter Your Business Information</h2> <p class="text-gray-600 text-center mb-6">Let's get your dashboard personalized! Please provide your business name and preferred currency below.</p> <form action="dashboard.php" method="POST" class="space-y-5"> <div>
-                        <label for="business_name" class="block text-sm font-medium text-gray-700 mb-1">Business Name:</label> <input type="text" id="business_name" name="business_name" required
-                               value="<?php echo htmlspecialchars($business_name ?? ''); ?>"
-                               class="form-input w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none transition duration-200 shadow-sm"> </div>
+    <div id="sidebar-overlay" class="fixed inset-0 bg-black bg-opacity-50 z-40 hidden"></div>
+    <aside id="sidebar" class="sidebar-closed fixed top-0 left-0 h-full w-64 bg-gray-800 text-white p-5 z-50 flex flex-col">
+        <div class="flex justify-between items-center mb-6">
+            <h2 class="text-xl font-bold">Menu</h2>
+            <button id="close-sidebar-btn" class="text-gray-400 hover:text-white">&times;</button>
+        </div>
+        
+        <div class="mb-6">
+            <p class="text-sm text-gray-400">Welcome,</p>
+            <p class="font-semibold text-lg"><?php echo htmlspecialchars($username); ?></p>
+        </div>
+
+        <nav class="flex-grow">
+             <h3 class="text-gray-400 text-sm font-semibold uppercase mt-4 mb-2">Dashboard Management</h3> 
+            <a href="dashboard.php" class="block py-2.5 px-4 rounded transition duration-200 bg-gray-700 font-semibold mb-2">Dashboard</a>
+            <a href="scheduled_expenses.php" class="block py-2.5 px-4 rounded transition duration-200 hover:bg-gray-700">Scheduled Expenses</a>
+            <a href="transactions.php" class="block py-2.5 px-4 rounded transition duration-200 hover:bg-gray-700">Transactions</a>
+            <a href="inventory_manage.php" class="block py-2.5 px-4 rounded transition duration-200 hover:bg-gray-700">Inventory</a>
+
+            <h3 class="text-gray-400 text-sm font-semibold uppercase mt-4 mb-2">Cash Flow Management</h3> 
+            <a href="income_input.php" class="block py-2.5 px-4 rounded transition duration-200 hover:bg-gray-700">Add Income</a>
+            <a href="expense_input.php" class="block py-2.5 px-4 rounded transition duration-200 hover:bg-gray-700">Add Expenses</a>
+            <a href="savings.php" class="block py-2.5 px-4 rounded transition duration-200 hover:bg-gray-700">Savings Settings</a>
+         
+            <button type="button" onclick="toggleEditForm()" class="w-full sm:w-auto bg-blue-200 text-blue-700 px-3 py-2 rounded-full font-medium shadow-sm hover:bg-blue-300 transition duration-200"> Edit Business Info</button>
+            <a href="user_settings.php" class="block py-2.5 px-4 rounded transition duration-200 hover:bg-gray-700">User Settings</a>
+            
+        </nav>
+
+        <div class="mt-auto">
+             <a href="logout.php" class="block w-full text-center bg-red-600 text-white py-2 rounded-lg hover:bg-red-700 font-semibold transition duration-200">
+                Logout
+            </a>
+        </div>
+    </aside>
+    <header class="bg-gradient-to-r from-blue-600 to-blue-500 p-4 shadow-lg text-white sticky top-0 z-30">
+        <div class="container flex justify-between items-center">
+            <button id="open-sidebar-btn" class="p-2 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-white">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                </svg>
+            </button>
+            <div class="text-lg font-bold">
+                <?php echo htmlspecialchars($business_name ?: 'Dashboard'); ?>
+            </div>
+            <div></div>
+        </div>
+    </header>
+
+    <main class="container py-6">
+        <?php if (empty($business_name)): ?>
+            <div class="bg-white p-8 rounded-xl shadow-2xl w-full max-w-md mx-auto transform hover:scale-105 transition duration-300 ease-in-out">
+                <h2 class="text-3xl font-bold text-center text-gray-800 mb-5">Enter Your Business Information</h2>
+                <p class="text-gray-600 text-center mb-6">Let's get your dashboard personalized! Please provide your business name and preferred currency below.</p>
+                <form action="dashboard.php" method="POST" class="space-y-5">
                     <div>
-                        <label for="currency" class="block text-sm font-medium text-gray-700 mb-1">Currency Symbol:</label> <select id="currency" name="currency"
-                               class="form-input w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none transition duration-200 shadow-sm appearance-none bg-white"> <option value="$" <?php echo ($currency == '$') ? 'selected' : ''; ?>>$ (USD)</option>
+                        <label for="business_name" class="block text-sm font-medium text-gray-700 mb-1">Business Name:</label>
+                        <input type="text" id="business_name" name="business_name" required value="<?php echo htmlspecialchars($business_name ?? ''); ?>" class="form-input w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none transition duration-200 shadow-sm">
+                    </div>
+                    <div>
+                        <label for="currency" class="block text-sm font-medium text-gray-700 mb-1">Currency Symbol:</label>
+                        <select id="currency" name="currency" class="form-input w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none transition duration-200 shadow-sm appearance-none bg-white">
+                            <option value="$" <?php echo ($currency == '$') ? 'selected' : ''; ?>>$ (USD)</option>
                             <option value="€" <?php echo ($currency == '€') ? 'selected' : ''; ?>>€ (EUR)</option>
                             <option value="£" <?php echo ($currency == '£') ? 'selected' : ''; ?>>£ (GBP)</option>
                             <option value="¥" <?php echo ($currency == '¥') ? 'selected' : ''; ?>>¥ (JPY)</option>
                             <option value="₱" <?php echo ($currency == '₱') ? 'selected' : ''; ?>>₱ (PHP)</option>
-                            </select>
+                        </select>
                     </div>
-                    <button type="submit" name="submit_business_name"
-                            class="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-75 font-semibold transition duration-200 shadow-lg transform hover:scale-105"> Create Dashboard
+                    <button type="submit" name="submit_business_name" class="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-75 font-semibold transition duration-200 shadow-lg transform hover:scale-105">
+                        Create Dashboard
                     </button>
                 </form>
             </div>
         <?php else: ?>
-            <div class="bg-white p-4 rounded-xl shadow-2xl mb-4"> 
-                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-5"> <h2 class="text-4xl font-extrabold text-gray-800 animate-fade-in mb-3 sm:mb-0">Dashboard for <span class="text-blue-600"><?php echo htmlspecialchars($business_name); ?></span></h2> <div class="flex flex-wrap justify-center sm:justify-end gap-3 dashboard-actions"> 
-                <a href="income_input.php" class="w-full sm:w-auto bg-green-500 text-white px-4 py-2 rounded-full font-semibold shadow-md hover:bg-green-600 transition duration-300 ease-in-out transform hover:scale-105"> Add Income</a>
-                <a href="expense_input.php" class="w-full sm:w-auto bg-red-500 text-white px-4 py-2 rounded-full font-semibold shadow-md hover:bg-red-600 transition duration-300 ease-in-out transform hover:scale-105"> Add Expense</a>
-                <a href="savings.php" class="w-full sm:w-auto bg-blue-500 text-white px-4 py-2 rounded-full font-semibold shadow-md hover:bg-blue-600 transition duration-300 ease-in-out transform hover:scale-105"> Savings</a>
-                        <button type="button" onclick="toggleEditForm()"
-                                class="w-full sm:w-auto bg-blue-200 text-blue-700 px-3 py-2 rounded-full font-medium shadow-sm hover:bg-blue-300 transition duration-200"> Edit Business Info
-                        </button>
-                    </div>
+            <div class="bg-white p-6 rounded-xl shadow-2xl mb-6"> 
+                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-5">
+                    <h2 class="text-4xl font-extrabold text-gray-800 mb-3 sm:mb-0">Dashboard for <span class="text-blue-600"><?php echo htmlspecialchars($business_name); ?></span></h2>
                 </div>
-                <p class="text-gray-700 text-xl leading-relaxed mb-6 animate-fade-in-delay">Welcome to your executive dashboard! Get a quick overview of your key business insights at a glance.</p> <div id="editBusinessInfoForm" class="hidden-edit-form bg-blue-50 p-1 rounded-lg shadow-md mb-1"> <h3 class="text-2xl font-bold text-blue-800 mb-1 text-center">Update Business Information</h3> <form action="dashboard.php" method="POST" class="space-y-5"> <div>
-                            <label for="edit_business_name" class="block text-sm font-medium text-gray-700 mb-1">Business Name:</label> <input type="text" id="edit_business_name" name="business_name" required
-                                   value="<?php echo htmlspecialchars($business_name ?? ''); ?>"
-                                   class="form-input w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none transition duration-200 shadow-sm"> </div>
+                <p class="text-gray-700 text-xl leading-relaxed mb-6">Welcome to your executive dashboard! Get a quick overview of your key business insights at a glance.</p>
+                <div id="editBusinessInfoForm" class="hidden-edit-form bg-blue-50 p-4 rounded-lg shadow-md mb-4">
+                    <h3 class="text-2xl font-bold text-blue-800 mb-4 text-center">Update Business Information</h3>
+                    <form action="dashboard.php" method="POST" class="space-y-5">
                         <div>
-                            <label for="edit_currency" class="block text-sm font-medium text-gray-700 mb-1">Currency Symbol:</label> <select id="edit_currency" name="currency"
-                                   class="form-input w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none transition duration-200 shadow-sm appearance-none bg-white"> <option value="$" <?php echo ($currency == '$') ? 'selected' : ''; ?>>$ (USD)</option>
+                            <label for="edit_business_name" class="block text-sm font-medium text-gray-700 mb-1">Business Name:</label>
+                            <input type="text" id="edit_business_name" name="business_name" required value="<?php echo htmlspecialchars($business_name ?? ''); ?>" class="form-input w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none transition duration-200 shadow-sm">
+                        </div>
+                        <div>
+                            <label for="edit_currency" class="block text-sm font-medium text-gray-700 mb-1">Currency Symbol:</label>
+                            <select id="edit_currency" name="currency" class="form-input w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none transition duration-200 shadow-sm appearance-none bg-white">
+                                <option value="$" <?php echo ($currency == '$') ? 'selected' : ''; ?>>$ (USD)</option>
                                 <option value="€" <?php echo ($currency == '€') ? 'selected' : ''; ?>>€ (EUR)</option>
                                 <option value="£" <?php echo ($currency == '£') ? 'selected' : ''; ?>>£ (GBP)</option>
                                 <option value="¥" <?php echo ($currency == '¥') ? 'selected' : ''; ?>>¥ (JPY)</option>
                                 <option value="₱" <?php echo ($currency == '₱') ? 'selected' : ''; ?>>₱ (PHP)</option>
-                                </select>
+                            </select>
                         </div>
-                        <button type="submit" name="update_business_info"
-                                class="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-75 font-semibold transition duration-200 shadow-lg transform hover:scale-105"> Update Info
+                        <button type="submit" name="update_business_info" class="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-75 font-semibold transition duration-200 shadow-lg transform hover:scale-105">
+                            Update Info
                         </button>
                     </form>
                 </div>
 
-
-                <div class="bg-blue-50 p-5 rounded-lg shadow-md mb-8 flex flex-col md:flex-row justify-between items-start md:items-center gap-3"> <div class="flex items-center">
+                <div class="bg-blue-50 p-5 rounded-lg shadow-md mb-8 flex flex-col md:flex-row justify-between items-start md:items-center gap-3">
+                    <div class="flex items-center">
                         <svg class="h-5 w-5 text-blue-600 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
                         <p class="text-blue-800 text-base font-medium">Account Status:
                             <span class="<?php echo ($account_status === 'active') ? 'text-green-700' : 'text-red-700'; ?>">
@@ -889,7 +865,7 @@ $conn->close();
                     </div>
                     <?php if ($expiration_date): ?>
                     <div class="flex items-center">
-                        <svg class="h-5 w-5 text-blue-600 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></path></svg>
+                        <svg class="h-5 w-5 text-blue-600 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
                         <p class="text-blue-800 text-base font-medium">Expires:
                             <span class="<?php echo (strtotime($expiration_date) < time()) ? 'text-red-700' : 'text-gray-800'; ?>">
                                 <?php echo htmlspecialchars(date('Y-m-d H:i', strtotime($expiration_date))); ?>
@@ -906,9 +882,11 @@ $conn->close();
                     <?php echo $scheduled_expenses_alert; ?>
                 <?php endif; ?>
 
-
-                <div class="bg-white p-6 rounded-xl shadow-lg border border-purple-100 mt-8"> <h3 class="text-xl font-semibold text-purple-700 mb-3 text-center">Monthly Targets Overview (Current Month)</h3> <div class="grid grid-cols-1 md:grid-cols-2 gap-5"> <div>
-                            <p class="text-base font-medium text-gray-800 mb-2">Income Progress:
+                <div class="bg-white p-6 rounded-xl shadow-lg border border-purple-100 mt-8">
+                    <h3 class="text-xl font-semibold text-purple-700 mb-3 text-center">Monthly Targets Overview (Current Month)</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                        <div>
+                            <p class="text-base font-medium text-gray-800 mb-2">Income Progress:<br>
                                 <span class="text-green-600"><?php echo htmlspecialchars($currency); ?><?php echo number_format($current_month_actual_income, 2); ?></span> /
                                 <span class="text-green-700"><?php echo htmlspecialchars($currency); ?><?php echo number_format($monthly_income_target, 2); ?></span>
                             </p>
@@ -922,13 +900,15 @@ $conn->close();
                                 </div>
                             </div>
                             <?php if ($current_month_actual_income >= $monthly_income_target && $monthly_income_target > 0): ?>
-                                <p class="text-green-500 text-sm mt-1">Target achieved! Well done!</p> <?php elseif ($monthly_income_target > 0): ?>
-                                <p class="text-blue-500 text-sm mt-1">Keep going to reach your income goal!</p> <?php else: ?>
-                                <p class="text-gray-500 text-sm mt-1">Set an income target to track your progress.</p> <?php endif; ?>
+                                <p class="text-green-500 text-sm mt-1">Target achieved! Well done!</p>
+                            <?php elseif ($monthly_income_target > 0): ?>
+                                <p class="text-blue-500 text-sm mt-1">Keep going to reach your income goal!</p>
+                            <?php else: ?>
+                                <p class="text-gray-500 text-sm mt-1">Set an income target to track your progress.</p>
+                            <?php endif; ?>
                         </div>
-
                         <div>
-                            <p class="text-base font-medium text-gray-800 mb-2">Expense Progress:
+                            <p class="text-base font-medium text-gray-800 mb-2">Expense Progress:<br>
                                 <span class="text-red-600"><?php echo htmlspecialchars($currency); ?><?php echo number_format($current_month_actual_expenses, 2); ?></span> /
                                 <span class="text-red-700"><?php echo htmlspecialchars($currency); ?><?php echo number_format($monthly_expense_target, 2); ?></span>
                             </p>
@@ -942,83 +922,69 @@ $conn->close();
                                 </div>
                             </div>
                             <?php if ($current_month_actual_expenses <= $monthly_expense_target && $monthly_expense_target > 0): ?>
-                                <p class="text-green-500 text-sm mt-1">Great job staying within your expense target!</p> <?php elseif ($monthly_expense_target > 0): ?>
-                                <p class="text-red-500 text-sm mt-1">You've exceeded your expense target!</p> <?php else: ?>
-                                <p class="text-gray-500 text-sm mt-1">Set an expense target to manage your spending.</p> <?php endif; ?>
+                                <p class="text-green-500 text-sm mt-1">Great job staying within your expense target!</p>
+                            <?php elseif ($monthly_expense_target > 0): ?>
+                                <p class="text-red-500 text-sm mt-1">You've exceeded your expense target!</p>
+                            <?php else: ?>
+                                <p class="text-gray-500 text-sm mt-1">Set an expense target to manage your spending.</p>
+                            <?php endif; ?>
                         </div>
                     </div>
                 </div>
-                    
-                <!-- This Month -->
-                    <div class="mt-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"> 
-                        <div class="relative card bg-gradient-to-br from-blue-50 to-blue-100 p-6 rounded-xl shadow-lg border border-blue-200 transform hover:shadow-xl transition-all duration-300 ease-in-out"> 
-                            <!-- + Button -->
-                            <a href="income_input.php"
-                                class="absolute top-1/2 right-6 -translate-y-1/2 bg-blue-600 text-white text-4xl rounded-full w-14 h-14 flex items-center justify-center shadow-lg hover:bg-blue-700 transition-all duration-200 focus:outline-none"
-                                aria-label="Add">+</a>
-                            
-                            <h3 class="text-xl font-semibold text-blue-700 mb-2">This Month Sales</h3>
-                            <p class="text-3xl font-bold text-blue-600 mb-1">
-                                <?php echo htmlspecialchars($currency); ?><?php echo number_format($current_month_actual_income, 2); ?>
-                            </p> 
-                            <p class="text-gray-500 text-sm"><?php echo date('F Y'); ?> </p>
-                        </div>
-                        <div class="relative card bg-gradient-to-br from-red-50 to-red-100 p-6 rounded-xl shadow-lg border border-red-200 transform hover:shadow-xl transition-all duration-300 ease-in-out"> 
-                            <!-- + Button -->
-                            <a href="expense_input.php"
-                                class="absolute top-1/2 right-6 -translate-y-1/2 bg-red-600 text-white text-4xl rounded-full w-14 h-14 flex items-center justify-center shadow-lg hover:bg-red-700 transition-all duration-200 focus:outline-none"
-                                aria-label="Add">+</a>
-                            
-                            <h3 class="text-xl font-semibold text-red-700 mb-2">This Month Expenses</h3>
-                            <p class="text-3xl font-bold text-red-600 mb-1">
-                                <?php echo htmlspecialchars($currency); ?><?php echo number_format($current_month_actual_expenses, 2); ?>
-                            </p> 
-                            <p class="text-gray-500 text-sm"><?php echo date('F Y'); ?> </p>
-                        </div>   
-                        <div class="card bg-gradient-to-br from-green-50 to-green-100 p-6 rounded-xl shadow-lg border border-green-200 transform hover:shadow-xl transition-all duration-300 ease-in-out"> 
-                            <h3 class="text-xl font-semibold text-green-700 mb-2">This Month Profit</h3>
-                            <p class="text-3xl font-bold text-green-600 mb-1"><?php echo htmlspecialchars($currency); ?><?php echo number_format($current_month_actual_income - $current_month_actual_expenses, 2); ?></p> 
-                            <!-- <p class="text-gray-500 text-sm">Last 30 days</p> -->
-                            <p class="text-gray-500 text-sm"><?php echo date('F Y'); ?> </p>
-                        </div>                     
-                    </div>
 
-                <!-- This month -->
-                <div class="mt-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"> 
-                    <div class="card bg-gradient-to-br from-blue-50 to-blue-100 p-6 rounded-xl shadow-lg border border-blue-200 transform hover:shadow-xl transition-all duration-300 ease-in-out">                        
-                        <!-- Last month data card -->
+                <div class="mt-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <div class="relative card bg-gradient-to-br from-blue-50 to-blue-100 p-6 rounded-xl shadow-lg border border-blue-200">
+                        <a href="income_input.php" class="absolute top-1/2 right-6 -translate-y-1/2 bg-blue-600 text-white text-4xl rounded-full w-14 h-14 flex items-center justify-center shadow-lg hover:bg-blue-700 transition-all duration-200 focus:outline-none" aria-label="Add">+</a>
+                        <h3 class="text-xl font-semibold text-blue-700 mb-2">This Month Sales</h3>
+                        <p class="text-3xl font-bold text-blue-600 mb-1"><?php echo htmlspecialchars($currency); ?><?php echo number_format($current_month_actual_income, 2); ?></p>
+                        <p class="text-gray-500 text-sm"><?php echo date('F Y'); ?></p>
+                    </div>
+                    <div class="relative card bg-gradient-to-br from-red-50 to-red-100 p-6 rounded-xl shadow-lg border border-red-200">
+                        <a href="expense_input.php" class="absolute top-1/2 right-6 -translate-y-1/2 bg-red-600 text-white text-4xl rounded-full w-14 h-14 flex items-center justify-center shadow-lg hover:bg-red-700 transition-all duration-200 focus:outline-none" aria-label="Add">+</a>
+                        <h3 class="text-xl font-semibold text-red-700 mb-2">This Month Expenses</h3>
+                        <p class="text-3xl font-bold text-red-600 mb-1"><?php echo htmlspecialchars($currency); ?><?php echo number_format($current_month_actual_expenses, 2); ?></p>
+                        <p class="text-gray-500 text-sm"><?php echo date('F Y'); ?></p>
+                    </div>
+                    <div class="card bg-gradient-to-br from-green-50 to-green-100 p-6 rounded-xl shadow-lg border border-green-200">
+                        <h3 class="text-xl font-semibold text-green-700 mb-2">This Month Profit</h3>
+                        <p class="text-3xl font-bold text-green-600 mb-1"><?php echo htmlspecialchars($currency); ?><?php echo number_format($current_month_actual_income - $current_month_actual_expenses, 2); ?></p>
+                        <p class="text-gray-500 text-sm"><?php echo date('F Y'); ?></p>
+                    </div>
+                </div>
+
+                <div class="mt-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <div class="card bg-gradient-to-br from-blue-50 to-blue-100 p-6 rounded-xl shadow-lg border border-blue-200">
                         <h3 class="text-xl font-semibold text-blue-700 mb-2">Last Month Sales</h3>
-                            <p class="text-3xl font-bold text-blue-600 mb-1"><?php echo htmlspecialchars($currency); ?><?php echo number_format($last_month_actual_income, 2); ?></p> 
-                            <p class="text-gray-500 text-sm"><?php echo date('F Y', strtotime('last month')); ?> </p>
-                        <!-- Total Sales     --><br>
-                        <h3 class="text-xl font-semibold text-blue-700 mb-2"> Total Sales</h3>
-                            <p class="text-3xl font-bold text-blue-600 mb-1"><?php echo htmlspecialchars($currency); ?><?php echo number_format($total_sales_30_days, 2); ?></p> 
+                        <p class="text-3xl font-bold text-blue-600 mb-1"><?php echo htmlspecialchars($currency); ?><?php echo number_format($last_month_actual_income, 2); ?></p>
+                        <p class="text-gray-500 text-sm"><?php echo date('F Y', strtotime('last month')); ?></p>
+                        <br>
+                        <h3 class="text-xl font-semibold text-blue-700 mb-2">Total Sales</h3>
+                        <p class="text-3xl font-bold text-blue-600 mb-1"><?php echo htmlspecialchars($currency); ?><?php echo number_format($total_sales_30_days, 2); ?></p>
                     </div>
-                    
-                    <div class="card bg-gradient-to-br from-red-50 to-red-100 p-6 rounded-xl shadow-lg border border-red-200 transform hover:shadow-xl transition-all duration-300 ease-in-out">                       
-                         <!-- Last month data card-->
+                    <div class="card bg-gradient-to-br from-red-50 to-red-100 p-6 rounded-xl shadow-lg border border-red-200">
                         <h3 class="text-xl font-semibold text-red-700 mb-2">Last Month Expenses</h3>
-                            <p class="text-3xl font-bold text-red-600 mb-1"><?php echo htmlspecialchars($currency); ?><?php echo number_format($last_month_actual_expenses, 2); ?></p> 
-                            <p class="text-gray-500 text-sm"><?php echo date('F Y', strtotime('last month')); ?> </p>
-                        <!-- Total profit--><br>
-                        <h3 class="text-xl font-semibold text-red-700 mb-2"> Total Expenses</h3>
-                            <p class="text-3xl font-bold text-red-600 mb-1"><?php echo htmlspecialchars($currency); ?><?php echo number_format($total_expenses_30_days, 2); ?></p> 
-
+                        <p class="text-3xl font-bold text-red-600 mb-1"><?php echo htmlspecialchars($currency); ?><?php echo number_format($last_month_actual_expenses, 2); ?></p>
+                        <p class="text-gray-500 text-sm"><?php echo date('F Y', strtotime('last month')); ?></p>
+                        <br>
+                        <h3 class="text-xl font-semibold text-red-700 mb-2">Total Expenses</h3>
+                        <p class="text-3xl font-bold text-red-600 mb-1"><?php echo htmlspecialchars($currency); ?><?php echo number_format($total_expenses_30_days, 2); ?></p>
                     </div>
-
-                    <div class="card bg-gradient-to-br from-green-50 to-green-100 p-6 rounded-xl shadow-lg border border-green-200 transform hover:shadow-xl transition-all duration-300 ease-in-out">                         
-                    <!-- Last month data card -->
+                    <div class="card bg-gradient-to-br from-green-50 to-green-100 p-6 rounded-xl shadow-lg border border-green-200">
                         <h3 class="text-xl font-semibold text-green-700 mb-2">Last Month Profit</h3>
-                            <p class="text-3xl font-bold text-green-600 mb-1"><?php echo htmlspecialchars($currency); ?><?php echo number_format($last_month_actual_income - $last_month_actual_expenses, 2); ?></p> 
-                            <p class="text-gray-500 text-sm"><?php echo date('F Y', strtotime('last month')); ?></p>
-                        <!-- Total profit --><br>
-                        <h3 class="text-xl font-semibold text-green-700 mb-2"> Total Profit</h3>
-                            <p class="text-3xl font-bold text-green-600 mb-1"><?php echo htmlspecialchars($currency); ?><?php echo number_format($total_profit_30_days, 2); ?></p> 
+                        <p class="text-3xl font-bold text-green-600 mb-1"><?php echo htmlspecialchars($currency); ?><?php echo number_format($last_month_actual_income - $last_month_actual_expenses, 2); ?></p>
+                        <p class="text-gray-500 text-sm"><?php echo date('F Y', strtotime('last month')); ?></p>
+                        <br>
+                        <h3 class="text-xl font-semibold text-green-700 mb-2">Total Profit</h3>
+                        <p class="text-3xl font-bold text-green-600 mb-1"><?php echo htmlspecialchars($currency); ?><?php echo number_format($total_profit_30_days, 2); ?></p>
                     </div>
-                </div>                
-                <div class="bg-white p-4 rounded-xl shadow-lg border border-gray-200 mt-4"> <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-5"> <h3 id="chartTitle" class="text-2xl font-bold text-gray-800 text-center sm:text-left mb-3 sm:mb-0">Financial Overview (Current Year <?php echo date('Y'); ?>)</h3> <select id="chartPeriod" onchange="updateChartPeriod()"
-                                class="form-input px-3 py-1 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition duration-200 shadow-sm appearance-none bg-white w-full sm:w-auto"> <option value="daily">Daily View</option>
-                            <option value="monthly">Monthly View</option>
+                </div>
+
+                <div class="bg-white p-6 rounded-xl shadow-lg border border-gray-200 mt-8">
+                    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-5">
+                        <h3 id="chartTitle" class="text-2xl font-bold text-gray-800 text-center sm:text-left mb-3 sm:mb-0">Financial Overview</h3>
+                        <select id="chartPeriod" onchange="updateChartPeriod()" class="form-input px-3 py-1 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition duration-200 shadow-sm appearance-none bg-white w-full sm:w-auto">
+                            <option value="daily">Daily View</option>
+                            <option value="monthly" selected>Monthly View</option>
                             <option value="yearly">Yearly View</option>
                         </select>
                     </div>
@@ -1028,7 +994,10 @@ $conn->close();
                 </div>
 
                 <?php if ($show_inventory_overview): ?>
-                    <div class="bg-white p-6 rounded-xl shadow-lg border border-purple-100 mt-8"> <h3 class="text-xl font-semibold text-purple-700 mb-3 text-center">Inventory Overview</h3> <div class="flex flex-col md:flex-row justify-around items-center gap-4 mb-5"> <p class="text-base font-medium text-gray-800">Total Products: <span class="text-blue-600 font-bold"><?php echo $total_products; ?></span></p>
+                    <div class="bg-white p-6 rounded-xl shadow-lg border border-purple-100 mt-8">
+                        <h3 class="text-xl font-semibold text-purple-700 mb-3 text-center">Inventory Overview</h3>
+                        <div class="flex flex-col md:flex-row justify-around items-center gap-4 mb-5">
+                            <p class="text-base font-medium text-gray-800">Total Products: <span class="text-blue-600 font-bold"><?php echo $total_products; ?></span></p>
                             <p class="text-base font-medium text-gray-800">Products Low on Stock:
                                 <span class="<?php echo ($low_stock_products_count > 0) ? 'text-red-600 font-bold' : 'text-green-600 font-bold'; ?>">
                                     <?php echo $low_stock_products_count; ?>
@@ -1037,11 +1006,10 @@ $conn->close();
                         </div>
 
                         <?php if ($low_stock_products_count > 0): ?>
-                            <div class="bg-red-50 border-l-4 border-red-400 p-3 mb-5 rounded-md"> <div class="flex items-center">
+                            <div class="bg-red-50 border-l-4 border-red-400 p-3 mb-5 rounded-md">
+                                <div class="flex items-center">
                                     <div class="flex-shrink-0 text-red-700">
-                                        <svg class="h-5 w-5" fill="currentColor" viewBox="0 0 20 20">
-                                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm-1-12a1 1 0 10-2 0v4a1 1 0 102 0V6zm0 8a1 1 0 10-2 0h2z" clip-rule="evenodd" />
-                                        </svg>
+                                        <svg class="h-5 w-5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm-1-12a1 1 0 10-2 0v4a1 1 0 102 0V6zm0 8a1 1 0 10-2 0h2z" clip-rule="evenodd" /></svg>
                                     </div>
                                     <div class="ml-3 text-sm text-red-700">
                                         <p class="font-bold">Low Stock Alert! Please reorder:</p>
@@ -1056,35 +1024,43 @@ $conn->close();
                         <?php endif; ?>
 
                         <?php if ($total_products > 0): ?>
-                        <div class="chart-container mt-5"> <canvas id="inventoryStockChart"></canvas>
-                        </div>
+                            <div class="chart-container mt-5">
+                                <canvas id="inventoryStockChart"></canvas>
+                            </div>
                         <?php else: ?>
                             <p class="text-center text-gray-600 text-base">Add products to your inventory to see stock levels here.</p>
                         <?php endif; ?>
 
-                        <div class="text-center mt-5"> <a href="inventory_manage.php" class="bg-purple-600 text-white px-5 py-2 rounded-full font-semibold shadow-md hover:bg-purple-700 transition duration-300 ease-in-out transform hover:scale-105"> Go to Inventory Management
+                        <div class="text-center mt-5">
+                            <a href="inventory_manage.php" class="bg-purple-600 text-white px-5 py-2 rounded-full font-semibold shadow-md hover:bg-purple-700 transition duration-300 ease-in-out transform hover:scale-105">
+                                Go to Inventory Management
                             </a>
                         </div>
                     </div>
                 <?php endif; ?>
 
-
-                <div class="bg-white p-4 rounded-xl shadow-lg border border-gray-200 mt-4"> <h3 class="text-2xl font-bold text-gray-800 mb-5 text-center">Recent Transactions</h3> <?php if (empty($recent_transactions)): ?>
-                        <p class="text-center text-gray-600 text-base">No recent transactions found for the selected criteria.</p>
+                <div class="bg-white p-6 rounded-xl shadow-lg border border-gray-200 mt-8">
+                    <h3 class="text-2xl font-bold text-gray-800 mb-5 text-center">Recent Transactions</h3>
+                    <?php if (empty($recent_transactions)): ?>
+                        <p class="text-center text-gray-600 text-base">No recent transactions found.</p>
                     <?php else: ?>
                         <div class="overflow-x-auto rounded-lg border border-gray-200 shadow-sm">
                             <table class="min-w-full divide-y divide-gray-200">
                                 <thead class="bg-gray-50">
                                     <tr>
-                                        <th scope="col" class="px-5 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date & Time</th> <th scope="col" class="px-5 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Type</th> <th scope="col" class="px-5 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Description</th> <th scope="col" class="px-5 py-2 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Amount</th> </tr>
+                                        <th scope="col" class="px-5 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date & Time</th>
+                                        <th scope="col" class="px-5 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Type</th>
+                                        <th scope="col" class="px-5 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Description</th>
+                                        <th scope="col" class="px-5 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Amount</th>
+                                    </tr>
                                 </thead>
                                 <tbody class="bg-white divide-y divide-gray-200">
                                     <?php foreach ($recent_transactions as $transaction): ?>
                                         <tr>
-                                            <td class="px-5 py-3 whitespace-nowrap text-sm text-gray-900"><?php echo date('Y-m-d H:i', strtotime(htmlspecialchars($transaction['date']))); ?></td> <td class="px-5 py-3 whitespace-nowrap text-sm font-medium <?php echo ($transaction['type'] === 'income') ? 'text-green-600' : 'text-red-600'; ?>"> <?php echo ucfirst(htmlspecialchars($transaction['type'])); ?>
-                                            </td>
-                                            <td class="px-5 py-3 whitespace-nowrap text-sm text-gray-900"><?php echo htmlspecialchars($transaction['description'] ?? '-'); ?></td> <td class="px-5 py-3 whitespace-nowrap text-sm text-right font-semibold <?php echo ($transaction['type'] === 'income') ? 'text-green-600' : 'text-red-600'; ?>"> <?php echo htmlspecialchars($currency); ?><?php echo number_format($transaction['amount'], 2); ?>
-                                            </td>
+                                            <td class="px-5 py-4 whitespace-nowrap text-sm text-gray-900"><?php echo date('Y-m-d H:i', strtotime(htmlspecialchars($transaction['date']))); ?></td>
+                                            <td class="px-5 py-4 whitespace-nowrap text-sm font-medium <?php echo ($transaction['type'] === 'income') ? 'text-green-600' : 'text-red-600'; ?>"><?php echo ucfirst(htmlspecialchars($transaction['type'])); ?></td>
+                                            <td class="px-5 py-4 whitespace-nowrap text-sm text-gray-900"><?php echo htmlspecialchars($transaction['description'] ?? '-'); ?></td>
+                                            <td class="px-5 py-4 whitespace-nowrap text-sm text-right font-semibold <?php echo ($transaction['type'] === 'income') ? 'text-green-600' : 'text-red-600'; ?>"><?php echo htmlspecialchars($currency); ?><?php echo number_format($transaction['amount'], 2); ?></td>
                                         </tr>
                                     <?php endforeach; ?>
                                 </tbody>
@@ -1097,7 +1073,9 @@ $conn->close();
         <?php endif; ?>
     </main>
 
-    <footer class="bg-gray-900 text-white p-5 text-center mt-auto shadow-inner"> <p class="text-base">&copy; <?php echo date('Y'); ?> Executive Dashboard. All rights reserved.</p> </footer>
+    <footer class="bg-gray-900 text-white p-5 text-center mt-8 shadow-inner">
+        <p class="text-base">&copy; <?php echo date('Y'); ?> Executive Dashboard. All rights reserved.</p>
+    </footer>
 
     <script>
         let myChart; // Declare main financial chart globally
@@ -1107,7 +1085,6 @@ $conn->close();
             const form = document.getElementById('editBusinessInfoForm');
             form.classList.toggle('hidden-edit-form');
             form.classList.toggle('visible-edit-form');
-            // Ensure the dropdown for currency in the edit form is updated
             document.getElementById('edit_currency').value = '<?php echo htmlspecialchars($currency); ?>';
         }
 
@@ -1132,38 +1109,14 @@ $conn->close();
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
-                    plugins: {
-                        title: {
-                            display: false,
-                        },
-                        legend: {
-                            position: 'top',
-                            labels: {
-                                font: {
-                                    size: 14
-                                },
-                                color: '#4b5563'
-                            }
-                        }
-                    },
+                    plugins: { legend: { position: 'top', labels: { font: { size: 14 }, color: '#4b5563' } } },
                     scales: {
-                        x: {
-                            grid: {
-                                display: false
-                            },
-                            ticks: {
-                                color: '#6b7280'
-                            }
-                        },
+                        x: { grid: { display: false }, ticks: { color: '#6b7280' } },
                         y: {
                             beginAtZero: true,
-                            grid: {
-                                color: '#e5e7eb'
-                            },
+                            grid: { color: '#e5e7eb' },
                             ticks: {
-                                callback: function(value, index, ticks) {
-                                    return currentCurrency + value.toLocaleString();
-                                },
+                                callback: function(value) { return currentCurrency + value.toLocaleString(); },
                                 color: '#6b7280'
                             }
                         }
@@ -1186,22 +1139,11 @@ $conn->close();
         }
 
         function renderInventoryChart() {
-            if (!showInventoryOverview || allChartData.inventory_stock.labels.length === 0) {
-                console.log("Inventory overview disabled or no data to render chart.");
-                return;
-            }
-
+            if (!showInventoryOverview || allChartData.inventory_stock.labels.length === 0) return;
             const ctxInventory = document.getElementById('inventoryStockChart');
-            if (!ctxInventory) {
-                console.error("Inventory chart canvas not found.");
-                return;
-            }
+            if (!ctxInventory) return;
             const invCtx = ctxInventory.getContext('2d');
-
-            if (inventoryChart) {
-                inventoryChart.destroy();
-            }
-
+            if (inventoryChart) inventoryChart.destroy();
             inventoryChart = new Chart(invCtx, {
                 type: 'bar',
                 data: allChartData.inventory_stock,
@@ -1209,79 +1151,76 @@ $conn->close();
                     responsive: true,
                     maintainAspectRatio: false,
                     plugins: {
-                        title: {
-                            display: true,
-                            text: 'Product Stock Levels vs. Minimum Stock',
-                            font: {
-                                size: 18
-                            },
-                            color: '#374151'
-                        },
-                        legend: {
-                            position: 'top',
-                            labels: {
-                                font: {
-                                    size: 14
-                                },
-                                color: '#4b5563'
-                            }
-                        }
+                        title: { display: true, text: 'Product Stock Levels vs. Minimum Stock', font: { size: 18 }, color: '#374151' },
+                        legend: { position: 'top', labels: { font: { size: 14 }, color: '#4b5563' } }
                     },
                     scales: {
-                        x: {
-                            grid: {
-                                display: false
-                            },
-                            ticks: {
-                                color: '#6b7280'
-                            }
-                        },
-                        y: {
-                            beginAtZero: true,
-                            grid: {
-                                color: '#e5e7eb'
-                            },
-                            ticks: {
-                                color: '#6b7280'
-                            }
-                        }
+                        x: { grid: { display: false }, ticks: { color: '#6b7280' } },
+                        y: { beginAtZero: true, grid: { color: '#e5e7eb' }, ticks: { color: '#6b7280' } }
                     }
                 }
             });
         }
+        
+        // Initial chart render on page load
+        document.addEventListener('DOMContentLoaded', () => {
+            // Set default selection and render chart
+            document.getElementById('chartPeriod').value = 'monthly';
+            renderChart('monthly');
+            if (showInventoryOverview) {
+                renderInventoryChart();
+            }
+        });
 
-        // SweetAlert2 integration - this runs after the DOM is fully loaded
+        // SweetAlert2 integration
         window.onload = function() {
-            // Check for PHP-generated SweetAlert2 messages
             const phpSwalMessage = "<?php echo $swal_message; ?>";
             const phpSwalType = "<?php echo $swal_type; ?>";
-
             if (phpSwalMessage) {
                 Swal.fire({
                     icon: phpSwalType,
-                    title: phpSwalType.charAt(0).toUpperCase() + phpSwalType.slice(1), // Capitalize first letter
+                    title: phpSwalType.charAt(0).toUpperCase() + phpSwalType.slice(1),
                     text: phpSwalMessage,
                     confirmButtonText: 'Okay',
-                    customClass: {
-                        confirmButton: 'bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg',
-                    },
+                    customClass: { confirmButton: 'bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg' },
                     buttonsStyling: false
                 }).then(() => {
-                    // Remove the swal_message and swal_type from the URL after the alert is closed
                     window.history.replaceState({}, document.title, window.location.pathname);
                 });
-            }
-
-            // Call existing chart rendering functions
-            renderChart('daily');
-            if (showInventoryOverview) {
-                renderInventoryChart();
             }
         };
         <?php endif; ?>
     </script>
-    <style>
-        /* NEW: Loader CSS for AI Tip - REMOVED */
-    </style>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('sidebar-overlay');
+            const openBtn = document.getElementById('open-sidebar-btn');
+            const closeBtn = document.getElementById('close-sidebar-btn');
+
+            function openSidebar() {
+                sidebar.classList.remove('sidebar-closed');
+                sidebar.classList.add('sidebar-open');
+                overlay.classList.remove('hidden');
+            }
+
+            function closeSidebar() {
+                sidebar.classList.remove('sidebar-open');
+                sidebar.classList.add('sidebar-closed');
+                overlay.classList.add('hidden');
+            }
+
+            if (openBtn) {
+                openBtn.addEventListener('click', openSidebar);
+            }
+            if (closeBtn) {
+                closeBtn.addEventListener('click', closeSidebar);
+            }
+            if (overlay) {
+                overlay.addEventListener('click', closeSidebar);
+            }
+        });
+    </script>
 </body>
 </html>
